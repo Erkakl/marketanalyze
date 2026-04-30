@@ -52,10 +52,12 @@ Each asset gets a score from 0 to 100 based on live market data.
 7	P/E ratio	+15	valuation risk
 
 ## Risk thresholds
-Score	Level
-0–27	🟢 Low
-28–54	🟡 Medium
-55–100	🔴 High
+
+| Score   | Level     |
+|--------:|-----------|
+| 0–27    | 🟢 Low     |
+| 28–54   | 🟡 Medium  |
+| 55–100  | 🔴 High    |
 
 ## Features
 🔄 Interactive mode
@@ -95,13 +97,15 @@ CLI mode (legacy)
 python main.py AAPL MSFT BTC-USD
 ```
 ## Example results
-Symbol	Score	Level	Driver
-BTC-USD	72	🔴 High	crypto volatility
-TSLA	58	🔴 High	beta + swings
-NVDA	52	🟡 Medium	valuation
-AAPL	31	🟡 Medium	size + dividend
-QQQ	18	🟢 Low	ETF diversification
-BND	8	🟢 Low	bond stability
+
+| Symbol  | Score | Level       | Driver              |
+|--------|------:|-------------|---------------------|
+| BTC-USD | 72    | 🔴 High     | crypto volatility   |
+| TSLA    | 58    | 🔴 High     | beta + swings       |
+| NVDA    | 52    | 🟡 Medium   | valuation           |
+| AAPL    | 31    | 🟡 Medium   | size + dividend     |
+| QQQ     | 18    | 🟢 Low      | ETF diversification |
+| BND     | 8     | 🟢 Low      | bond stability      |
 
 ## Why this matters
 
