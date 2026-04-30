@@ -6,7 +6,6 @@ def score_risk(stats: AssetStats) -> RiskResult:
     breakdown: dict[str, int] = {}
     score = 0
 
-    # ── 1. Asset class (улучшено для crypto) ────────────────────
     if stats.asset_class == "crypto":
         cap = stats.market_cap or 0
         if cap > 500_000_000_000:
@@ -27,7 +26,6 @@ def score_risk(stats: AssetStats) -> RiskResult:
     score += class_pts
     breakdown["asset_class"] = class_pts
 
-    # ── 2. Beta ────────────────────────────────────────────────
     beta = stats.beta or 1.0
     if beta > 2:
         beta_pts = 30
@@ -45,7 +43,6 @@ def score_risk(stats: AssetStats) -> RiskResult:
     score += beta_pts
     breakdown["beta"] = beta_pts
 
-    # ── 3. Market cap ──────────────────────────────────────────
     cap = stats.market_cap or 0
     if cap == 0:
         cap_pts = 10
@@ -60,14 +57,12 @@ def score_risk(stats: AssetStats) -> RiskResult:
     else:
         cap_pts = -8
 
-    # ETF бонус стабильности
     if stats.asset_class == "etf":
         cap_pts -= 5
 
     score += cap_pts
     breakdown["market_cap"] = cap_pts
 
-    # ── 4. 52-week range ───────────────────────────────────────
     high, low = stats.week52_high, stats.week52_low
     if high and low and low > 0:
         r = (high - low) / low
@@ -87,7 +82,6 @@ def score_risk(stats: AssetStats) -> RiskResult:
     score += range_pts
     breakdown["52w_range"] = range_pts
 
-    # ── 5. Liquidity (НОВОЕ) ───────────────────────────────────
     vol = stats.volume or 0
     if vol < 1_000_000:
         liq_pts = 10
@@ -99,7 +93,6 @@ def score_risk(stats: AssetStats) -> RiskResult:
     score += liq_pts
     breakdown["liquidity"] = liq_pts
 
-    # ── 6. Dividend ────────────────────────────────────────────
     div = stats.dividend_yield or 0
     if div > 0.05:
         div_pts = -15
@@ -113,7 +106,6 @@ def score_risk(stats: AssetStats) -> RiskResult:
     score += div_pts
     breakdown["dividend"] = div_pts
 
-    # ── 7. P/E ─────────────────────────────────────────────────
     pe = stats.pe_ratio
     if pe is not None:
         if pe < 0:
@@ -132,7 +124,6 @@ def score_risk(stats: AssetStats) -> RiskResult:
     score += pe_pts
     breakdown["pe_ratio"] = pe_pts
 
-    # ── Final ──────────────────────────────────────────────────
     score = max(0, min(100, score))
 
     if score >= 55:
