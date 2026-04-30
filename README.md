@@ -71,6 +71,9 @@ Adds realism to scoring
 Slightly reduced risk due to diversification
 ## Project structure
 
+## Project structure
+
+```text
 stock-risk-analyzer/
 ├── main.py
 ├── fetcher.py
@@ -78,6 +81,7 @@ stock-risk-analyzer/
 ├── models.py
 ├── requirements.txt
 └── README.md
+```
 
 ## Install
 ```
