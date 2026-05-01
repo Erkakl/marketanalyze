@@ -39,8 +39,6 @@ def fetch_stats(symbol: str) -> AssetStats | None:
             name=info.get("shortName") or info.get("longName") or symbol,
             asset_class=asset_class,
             price=float(price),
-            # Фикс: None передаём как None, не заменяем на дефолт здесь
-            # (scorer сам решает что делать с None)
             beta=info.get("beta"),
             market_cap=info.get("marketCap"),
             week52_high=info.get("fiftyTwoWeekHigh"),
