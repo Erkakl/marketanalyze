@@ -1,141 +1,148 @@
 # stock-risk-analyzer
 
-A terminal tool that fetches **live market data** and scores each asset's risk level using a transparent, rule-based algorithm.
+Terminal tool that fetches **live market data** and scores each asset's risk — transparently, without black boxes.
 
-No AI. No black box. Every point in the score is explainable.
-
-Now supports **interactive mode** with continuous analysis and exit command `QUIT67`.
+No AI. Every point in the score is explainable.
 
 ---
 
 ## Demo
 
-```bash
-$ python main.py
-Stock Risk Analyzer (interactive mode)
-Type tickers separated by space or comma
-Type QUIT67 to exit
-
->> AAPL MSFT BTC-USD
-
-──────────────────────────────────────────────
-AAPL — Apple Inc.
-Price: $170.45
-Risk: MEDIUM (31/100)
-
-asset_class : +20
-beta        : +15
-market_cap  : -8
-52w_range   : +8
-liquidity   : +5
-dividend    : -3
-pe_ratio    : +3
-
-AAPL: 31/100 (medium). Moderate risk profile.
-
-──────────────────────────────────────────────
->> QUIT67
-Exiting...
 ```
+$ python main.py AAPL MSFT BTC-USD QQQ TSLA
+
+Stock Risk Analyzer
+Analyzing 5 asset(s): AAPL, MSFT, BTC-USD, QQQ, TSLA
+
+────────────────────────────────────────────────────────
+  BTC-USD    Bitcoin USD
+  Price : $67,210.00
+  Risk  : 🔴 HIGH     (score 76/100)
+
+  Score breakdown:
+    asset_class    +17  █████████████
+    beta           +18  ██████████████
+    market_cap      +6  ████
+    volatility     +14  ███████████
+    liquidity       +0  ·
+    valuation       +5  ████
+    dividend        +3  ██
+
+  BTC-USD: 76/100 (high). Driven by market sensitivity and asset type. High risk — expect strong price swings.
+
+════════════════════════════════════════════════════════
+  SYMBOL      SCORE  RISK           PRICE
+────────────────────────────────────────────────────────
+  BTC-USD        76  🔴 high     $67,210.00
+  TSLA           63  🔴 high       $172.30
+  AAPL           34  🟡 medium     $170.45
+  MSFT           31  🟡 medium     $424.46
+  QQQ            17  🟢 low        $445.00
+════════════════════════════════════════════════════════
+```
+
+---
 
 ## How it works
 
-Each asset gets a score from 0 to 100 based on live market data.
+Each asset gets a **score from 0 to 100**. Every factor is scored 0–100 on a continuous scale, then multiplied by its weight.
 
-#	Factor	Impact	Meaning
-1	Asset class	+40	crypto > stock > ETF baseline risk
-2	Beta	+30 / -10	sensitivity to market movement
-3	Market cap	+25 / -8	size and stability
-4	52-week range	+20	historical volatility
-5	Liquidity (volume)	+10	ease of entering/exiting
-6	Dividend yield	-15	stability signal
-7	P/E ratio	+15	valuation risk
+| # | Factor | Weight | Logic |
+|---|--------|--------|-------|
+| 1 | Asset class | 20% | `crypto` > `stock` > `fund` > `etf` > `index` |
+| 2 | Beta | 20% | Continuous scale — sensitivity to S&P 500 |
+| 3 | Market cap | 15% | Log scale — micro-cap = more risk |
+| 4 | Volatility | 20% | 52-week price range as % of low |
+| 5 | Liquidity | 10% | Log scale — low volume = hard to exit |
+| 6 | Valuation | 10% | P/E ratio — extreme values signal risk |
+| 7 | Dividend | 5% | High yield = stable, no yield = speculative |
 
-## Risk thresholds
+**Risk levels:**
 
-| Score   | Level     |
-|--------:|-----------|
-| 0–27    | 🟢 Low     |
-| 28–54   | 🟡 Medium  |
-| 55–100  | 🔴 High    |
+| Score | Level |
+|-------|-------|
+| 0 – 29 | 🟢 Low |
+| 30 – 59 | 🟡 Medium |
+| 60 – 100 | 🔴 High |
 
-## Features
-🔄 Interactive mode
-Continuous analysis session
-Multiple tickers per input
-Exit with QUIT67
-📊 Liquidity factor
-Low volume = higher risk
-Adds realism to scoring
-📦 ETF handling
-Slightly reduced risk due to diversification
+---
+
+## Install
+
+```bash
+git clone https://github.com/Erkakl/marketanalyze
+cd marketanalyze
+pip install -r requirements.txt
+```
+
+---
+
+## Usage
+
+**Interactive mode:**
+```bash
+python main.py
+```
+```
+>> AAPL TSLA BTC-USD
+>> NVDA
+>> QUIT67
+```
+
+**CLI mode:**
+```bash
+python main.py AAPL MSFT BTC-USD
+```
+
+Exit with `QUIT67`.
+
+---
+
 ## Project structure
 
-## Project structure
-
-```text
+```
 stock-risk-analyzer/
 ├── main.py
 ├── fetcher.py
 ├── scorer.py
 ├── models.py
 ├── requirements.txt
+├── .gitignore
 └── README.md
 ```
 
-## Install
-```
-git clone https://github.com/Erkakl/marketanalyze
-cd marketanalyze
-pip install -r requirements.txt
-Usage
-Interactive mode (recommended)
-python main.py
+---
 
-Then:
-
->> AAPL TSLA BTC-USD
->> NVDA
->> QUIT67
-CLI mode (legacy)
-python main.py AAPL MSFT BTC-USD
-```
 ## Example results
 
-| Symbol  | Score | Level       | Driver              |
-|--------|------:|-------------|---------------------|
-| BTC-USD | 72    | 🔴 High     | crypto volatility   |
-| TSLA    | 58    | 🔴 High     | beta + swings       |
-| NVDA    | 52    | 🟡 Medium   | valuation           |
-| AAPL    | 31    | 🟡 Medium   | size + dividend     |
-| QQQ     | 18    | 🟢 Low      | ETF diversification |
-| BND     | 8     | 🟢 Low      | bond stability      |
+| Symbol | Score | Level | Main drivers |
+|--------|-------|-------|-------------|
+| BTC-USD | 76 | 🔴 High | beta + volatility |
+| TSLA | 63 | 🔴 High | beta + price swings |
+| NVDA | 51 | 🟡 Medium | valuation (P/E) |
+| AAPL | 34 | 🟡 Medium | asset type + size |
+| QQQ | 17 | 🟢 Low | ETF + liquidity |
+| BND | 9 | 🟢 Low | dividend + stability |
 
-## Why this matters
-
-Most beginners look only at price.
-
-This tool forces evaluation of:
-
-volatility
-liquidity
-valuation
-structural risk
-
-It explains why an asset is risky, not just that it is.
+---
 
 ## Limitations
-Beta is historical
-Crypto metrics are simplified
-ETF holdings not deeply analyzed
-Not financial advice
+
+- Beta is historical — doesn't predict future volatility
+- Crypto metrics are simplified
+- ETF holdings not analyzed individually
+- **Not financial advice**
+
+---
 
 ## Future ideas
-compare mode (COMPARE AAPL MSFT)
-export to JSON/CSV
-volatility-based scoring
-web dashboard version
+
+- `COMPARE AAPL MSFT` — side-by-side mode
+- Export to JSON / CSV
+- Web dashboard version
+
+---
 
 ## License
 
-MIT — use it freely, modify it, improve it.
+MIT

@@ -5,13 +5,12 @@ import yfinance as yf
 
 from models import AssetStats
 
-
 QUOTE_TYPE_MAP = {
-    "EQUITY":       "stock",
-    "ETF":          "etf",
+    "EQUITY":         "stock",
+    "ETF":            "etf",
     "CRYPTOCURRENCY": "crypto",
-    "MUTUALFUND":   "fund",
-    "INDEX":        "index",
+    "MUTUALFUND":     "fund",
+    "INDEX":          "index",
 }
 
 
