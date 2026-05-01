@@ -23,7 +23,7 @@ class RiskResult:
     symbol: str
     name: str
     price: float
-    risk_level: str        # "low" | "medium" | "high"
-    risk_score: int        # 0–100
+    risk_level: str             # "low" | "medium" | "high"
+    risk_score: int             # 0–100
     breakdown: dict[str, int]   # per-factor contribution
     summary: str

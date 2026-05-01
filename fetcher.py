@@ -7,11 +7,11 @@ from models import AssetStats
 
 
 QUOTE_TYPE_MAP = {
-    "EQUITY": "stock",
-    "ETF": "etf",
+    "EQUITY":       "stock",
+    "ETF":          "etf",
     "CRYPTOCURRENCY": "crypto",
-    "MUTUALFUND": "fund",
-    "INDEX": "index",
+    "MUTUALFUND":   "fund",
+    "INDEX":        "index",
 }
 
 
@@ -39,11 +39,16 @@ def fetch_stats(symbol: str) -> AssetStats | None:
             name=info.get("shortName") or info.get("longName") or symbol,
             asset_class=asset_class,
             price=float(price),
+            # Фикс: None передаём как None, не заменяем на дефолт здесь
+            # (scorer сам решает что делать с None)
             beta=info.get("beta"),
             market_cap=info.get("marketCap"),
             week52_high=info.get("fiftyTwoWeekHigh"),
             week52_low=info.get("fiftyTwoWeekLow"),
-            dividend_yield=info.get("dividendYield") or info.get("trailingAnnualDividendYield"),
+            dividend_yield=(
+                info.get("dividendYield")
+                or info.get("trailingAnnualDividendYield")
+            ),
             pe_ratio=info.get("trailingPE") or info.get("forwardPE"),
             volume=info.get("volume") or info.get("regularMarketVolume"),
         )
