@@ -13,7 +13,7 @@ RISK_ICON = {
 }
 
 BAR_CHAR = "█"
-BAR_MAX = 15  # максимальная длина бара
+BAR_MAX = 15 
 
 
 def _bar(value: int, max_val: int = 25) -> str:
@@ -80,7 +80,6 @@ def analyze(symbols: list[str]) -> list:
 
 
 def main() -> None:
-    # ── CLI режим: python main.py AAPL MSFT BTC-USD ───────────
     if len(sys.argv) > 1:
         symbols = [s.upper() for s in sys.argv[1:]]
         print(f"\nStock Risk Analyzer")
@@ -89,7 +88,6 @@ def main() -> None:
         print_summary_table(results)
         return
 
-    # ── Интерактивный режим ────────────────────────────────────
     print("\nStock Risk Analyzer (interactive mode)")
     print("Type tickers separated by space or comma")
     print("Type QUIT67 to exit\n")
@@ -110,7 +108,6 @@ def main() -> None:
             print("Exiting...")
             break
 
-        # Поддержка запятых и пробелов как разделителей
         raw = raw.replace(",", " ")
         symbols = raw.split()
 
@@ -121,7 +118,6 @@ def main() -> None:
         results = analyze(symbols)
         session_results.extend(results)
 
-        # Показываем таблицу если было несколько тикеров
         if len(results) > 1:
             print_summary_table(results)
 
